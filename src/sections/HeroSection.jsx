@@ -122,16 +122,16 @@ export default function HeroSection({ onBookClick }) {
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 1, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
-            className="inline-flex items-center gap-3 px-4 py-1.5 rounded-full bg-black/35 backdrop-blur-md border border-gold/45 mb-8 shadow-lg"
+            className="inline-flex items-center gap-2.5 px-3.5 sm:px-4 py-1.5 rounded-full bg-black/35 backdrop-blur-md border border-gold/45 mb-6 sm:mb-8 shadow-lg max-w-full"
           >
-            <span className="w-1.5 h-1.5 rounded-full bg-gold-glow animate-ping" />
-            <span className="font-sans text-[10px] uppercase tracking-[0.28em] text-gold-glow font-bold">
+            <span className="w-1.5 h-1.5 rounded-full bg-gold-glow animate-ping shrink-0" />
+            <span className="font-sans text-[9px] sm:text-[10px] uppercase tracking-[0.16em] sm:tracking-[0.28em] text-gold-glow font-bold truncate">
               Madurai's Premier Dental Care Center · New Natham Road
             </span>
           </motion.div>
 
           {/* Headline — word-by-word reveal */}
-          <h1 className="font-serif text-5xl sm:text-6xl xl:text-[5.5rem] font-light leading-[1.05] text-white mb-4 tracking-tight drop-shadow-[0_8px_30px_rgba(0,0,0,0.9)]">
+          <h1 className="font-serif text-3xl sm:text-5xl md:text-6xl xl:text-[5.25rem] font-light leading-[1.08] sm:leading-[1.05] text-white mb-4 tracking-tight drop-shadow-[0_8px_30px_rgba(0,0,0,0.9)]">
             <div className="overflow-hidden">
               <WordReveal delay={0.35}>Pioneering Digital</WordReveal>
             </div>
@@ -153,7 +153,7 @@ export default function HeroSection({ onBookClick }) {
           {/* Gold divider line — GSAP draws left to right */}
           <div
             ref={lineRef}
-            className="w-24 h-[2px] bg-gradient-to-r from-gold via-gold-glow to-gold mb-6 rounded-full"
+            className="w-20 sm:w-24 h-[2px] bg-gradient-to-r from-gold via-gold-glow to-gold mb-5 sm:mb-6 rounded-full"
             style={{ transformOrigin: 'left center' }}
           />
 
@@ -162,7 +162,7 @@ export default function HeroSection({ onBookClick }) {
             initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1, delay: 1.0, ease: [0.16, 1, 0.3, 1] }}
-            className="font-sans text-sm md:text-base text-slate-200 font-normal max-w-lg leading-relaxed mb-10 drop-shadow-[0_4px_12px_rgba(0,0,0,0.9)]"
+            className="font-sans text-xs sm:text-sm md:text-base text-slate-200 font-normal max-w-lg leading-relaxed mb-8 sm:mb-10 drop-shadow-[0_4px_12px_rgba(0,0,0,0.9)]"
           >
             Under Dr. Melvin Raj, Mercy Dental Clinic delivers single-sitting root canals,
             dental implants, laser whitening, and wisdom tooth extractions in Tiruppalai, Madurai.
@@ -173,11 +173,11 @@ export default function HeroSection({ onBookClick }) {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.9, delay: 1.15, ease: [0.16, 1, 0.3, 1] }}
-            className="flex flex-wrap items-center gap-4"
+            className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3.5 sm:gap-4 w-full sm:w-auto"
           >
             <button
               onClick={onBookClick}
-              className="magnetic-btn group relative px-8 py-4 rounded-full overflow-hidden font-sans text-xs uppercase tracking-[0.22em] font-bold text-slate-950 shadow-[0_10px_40px_rgba(212,175,55,0.45)]"
+              className="magnetic-btn group relative px-7 sm:px-8 py-3.5 sm:py-4 rounded-full overflow-hidden font-sans text-xs uppercase tracking-[0.18em] sm:tracking-[0.22em] font-bold text-slate-950 shadow-[0_10px_40px_rgba(212,175,55,0.45)] text-center"
             >
               {/* Animated gradient fill */}
               <span className="absolute inset-0 bg-gradient-to-r from-gold via-gold-glow to-gold bg-[length:200%] group-hover:bg-[position:100%] transition-[background-position] duration-500 ease-out" />
@@ -190,7 +190,7 @@ export default function HeroSection({ onBookClick }) {
                 e.preventDefault();
                 window.__lenis?.scrollTo('#doctor', { duration: 1.8 });
               }}
-              className="magnetic-btn px-7 py-3.5 rounded-full bg-white/8 backdrop-blur-md border border-white/25 hover:border-gold/80 text-xs uppercase tracking-[0.2em] font-bold text-white hover:text-gold-glow transition-all duration-400"
+              className="magnetic-btn px-6 sm:px-7 py-3 sm:py-3.5 rounded-full bg-white/8 backdrop-blur-md border border-white/25 hover:border-gold/80 text-xs uppercase tracking-[0.18em] sm:tracking-[0.2em] font-bold text-white hover:text-gold-glow transition-all duration-400 text-center"
             >
               Dr. Melvin Raj Profile →
             </a>
@@ -226,18 +226,18 @@ export default function HeroSection({ onBookClick }) {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 1, delay: 1.3 }}
         style={{ opacity }}
-        className="max-w-7xl mx-auto w-full z-10 relative pt-10 border-t border-white/10"
+        className="max-w-7xl mx-auto w-full z-10 relative pt-8 sm:pt-10 border-t border-white/10"
       >
-        <div className="flex items-center gap-10 md:gap-16">
+        <div className="flex flex-wrap sm:flex-nowrap items-center justify-between sm:justify-start gap-4 sm:gap-10 md:gap-16">
           {[
             { val: '99.8%', label: 'Patient Satisfaction' },
             { val: '15+',   label: 'Years Practice' },
             { val: '10K+',  label: 'Procedures Done' },
           ].map((m, i) => (
             <React.Fragment key={i}>
-              {i > 0 && <div className="w-px h-8 bg-white/12" />}
+              {i > 0 && <div className="hidden sm:block w-px h-8 bg-white/12" />}
               <div className="flex flex-col">
-                <span className="font-serif text-3xl md:text-4xl text-gold-gradient font-bold leading-none">{m.val}</span>
+                <span className="font-serif text-2xl sm:text-3xl md:text-4xl text-gold-gradient font-bold leading-none">{m.val}</span>
                 <span className="font-sans text-[9px] uppercase tracking-widest text-slate-400 font-bold mt-1.5">{m.label}</span>
               </div>
             </React.Fragment>

@@ -139,7 +139,7 @@ export default function SmileTransformationSection() {
           {/* Interactive Image Split Canvas */}
           <div
             ref={containerRef}
-            className="relative w-full aspect-[16/9] md:aspect-[21/9] rounded-2xl overflow-hidden cursor-ew-resize select-none border border-gold/30 shadow-2xl bg-slate-950"
+            className="relative w-full aspect-[4/3] sm:aspect-[16/9] md:aspect-[21/9] rounded-2xl overflow-hidden cursor-ew-resize select-none border border-gold/30 shadow-2xl bg-slate-950"
             onMouseMove={(e) => {
               const rect = e.currentTarget.getBoundingClientRect();
               const x = Math.max(0, Math.min(e.clientX - rect.left, rect.width));

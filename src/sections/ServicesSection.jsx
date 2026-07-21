@@ -143,7 +143,7 @@ export default function ServicesSection({ onBookClick }) {
               <div
                 key={service.id}
                 className="service-card shimmer-card relative flex-shrink-0 rounded-[28px] overflow-hidden border border-white/8 shadow-2xl flex flex-col justify-between p-6 md:p-7 transition-all duration-300"
-                style={{ width: '340px', height: 'min(480px, calc(100vh - 240px))' }}
+                style={{ width: 'min(340px, 84vw)', height: 'min(480px, calc(100vh - 240px))' }}
                 onClick={() => onBookClick()}
               >
                 {/* Full-bleed image */}
@@ -189,7 +189,7 @@ export default function ServicesSection({ onBookClick }) {
             {/* End CTA card */}
             <div
               className="flex-shrink-0 rounded-[28px] border border-gold/30 flex flex-col items-center justify-center gap-6 bg-slate-950/90 backdrop-blur-xl"
-              style={{ width: '280px', height: 'min(480px, calc(100vh - 240px))' }}
+              style={{ width: 'min(280px, 80vw)', height: 'min(480px, calc(100vh - 240px))' }}
             >
               <div className="w-16 h-16 rounded-full border border-gold/50 flex items-center justify-center">
                 <svg className="w-7 h-7 text-gold" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
