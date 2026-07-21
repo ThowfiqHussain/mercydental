@@ -66,11 +66,46 @@ export default function ToothBackgroundCanvas() {
 
       let posY = isDesktop ? (height - drawHeight) / 2 : height * 0.45 - drawHeight / 2;
 
+      // Draw original frame onto canvas
       ctx.drawImage(
         img,
         0, 0, img.width, img.height,
         posX, posY, drawWidth, drawHeight
       );
+
+      // Chroma-key / Luminance Thresholding: Remove dark rectangular outer box
+      try {
+        const renderX = Math.floor(posX * dpr);
+        const renderY = Math.floor(posY * dpr);
+        const renderW = Math.floor(drawWidth * dpr);
+        const renderH = Math.floor(drawHeight * dpr);
+
+        if (renderW > 0 && renderH > 0) {
+          const imgData = ctx.getImageData(renderX, renderY, renderW, renderH);
+          const data = imgData.data;
+          const len = data.length;
+
+          for (let i = 0; i < len; i += 4) {
+            const r = data[i];
+            const g = data[i + 1];
+            const b = data[i + 2];
+
+            // Luminance calculation
+            const lum = 0.299 * r + 0.587 * g + 0.114 * b;
+
+            if (lum < 38) {
+              // Smoothly fade out dark outer box background pixels
+              const alphaFactor = Math.max(0, (lum - 12) / 26);
+              data[i + 3] = Math.floor(data[i + 3] * alphaFactor);
+            }
+          }
+
+          ctx.putImageData(imgData, renderX, renderY);
+        }
+      } catch (err) {
+        // Fallback gracefully if canvas context security / dpr boundary prevents pixel manipulation
+      }
+
       ctx.restore();
     }
 
@@ -126,7 +161,7 @@ export default function ToothBackgroundCanvas() {
     <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
       <canvas
         ref={canvasRef}
-        className="w-full h-full opacity-90 transition-opacity duration-300"
+        className="w-full h-full opacity-95 transition-opacity duration-300"
       />
     </div>
   );
