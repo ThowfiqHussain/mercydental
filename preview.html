@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mercy Dental Clinic Madurai - Best Dentist in Madurai | Dr. Melvin Raj</title>
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap" rel="stylesheet">
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            pearl: { 50: '#FDFDFE', 100: '#FAFBFD', 200: '#F1F3F7', 300: '#E5E8F0', DEFAULT: '#FAFAFC' },
+            gold: { light: '#F7E9C8', DEFAULT: '#D4AF37', deep: '#B8860B', glow: '#FCE762' },
+            silver: { light: '#F8FAFC', DEFAULT: '#CBD5E1', dark: '#64748B' },
+            obsidian: { light: '#1E202B', DEFAULT: '#0B0C10', pure: '#030304' }
+          },
+          fontFamily: {
+            serif: ['"Playfair Display"', 'Georgia', 'serif'],
+            sans: ['"Plus Jakarta Sans"', 'Inter', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- External Libraries -->
+  <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+  <style>
+    body {
+      background-color: #FAFAFC;
+      color: #0F172A;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      overflow-x: hidden;
+    }
+    .text-gold-gradient {
+      background: linear-gradient(135deg, #B8860B 0%, #D4AF37 40%, #F5E5C0 70%, #9A741A 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script type="text/babel">
+    const { useState, useEffect, useRef } = React;
+
+    // Loading Screen
+    function LoadingScreen({ onComplete }) {
+      const [progress, setProgress] = useState(0);
+      const [hidden, setHidden] = useState(false);
+
+      useEffect(() => {
+        const interval = setInterval(() => {
+          setProgress(prev => {
+            if (prev >= 100) {
+              clearInterval(interval);
+              setTimeout(() => {
+                setHidden(true);
+                if (onComplete) onComplete();
+              }, 400);
+              return 100;
+            }
+            return prev + Math.floor(Math.random() * 15) + 5;
+          });
+        }, 100);
+        return () => clearInterval(interval);
+      }, [onComplete]);
+
+      if (hidden) return null;
+
+      return (
+        <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-[#030304] text-white transition-opacity duration-700">
+          <div className="w-20 h-20 mb-8 rounded-full border border-yellow-500/50 flex items-center justify-center bg-zinc-900 shadow-[0_0_40px_rgba(212,175,55,0.4)]">
+            <svg
+              viewBox="0 0 100 100"
+              className="w-10 h-10 text-yellow-400 fill-yellow-400/20"
+              stroke="currentColor"
+              strokeWidth="5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="M 26 28 C 16 12, 44 14, 50 22 C 56 14, 84 12, 74 28 C 68 45, 78 68, 68 90 C 60 90, 55 58, 50 48 C 45 58, 40 90, 32 90 C 22 68, 32 45, 26 28 Z" />
+            </svg>
+          </div>
+          <h1 className="font-serif text-3xl md:text-5xl font-light tracking-[0.35em] text-gold-gradient uppercase mb-3">
+            M E R C Y
+          </h1>
+          <p className="font-sans text-xs tracking-[0.35em] uppercase text-slate-300 font-semibold mb-12">
+            Mercy Dental Clinic • Madurai Center
+          </p>
+          <div className="w-64 h-[2px] bg-zinc-800 rounded-full overflow-hidden">
+            <div className="h-full bg-gradient-to-r from-yellow-700 via-yellow-400 to-yellow-600 transition-all duration-300" style={{ width: `${progress}%` }}></div>
+          </div>
+          <div className="flex items-center justify-between w-64 mt-3 text-[11px] text-slate-400 font-sans tracking-widest uppercase font-bold">
+            <span>Initializing Experience</span>
+            <span className="text-yellow-400">{progress}%</span>
+          </div>
+        </div>
+      );
+    }
+
+    // Main App
+    function App() {
+      const [loaded, setLoaded] = useState(false);
+      const [sliderPos, setSliderPos] = useState(50);
+      const [isLightSection, setIsLightSection] = useState(false);
+      const containerRef = useRef(null);
+      const [containerWidth, setContainerWidth] = useState(800);
+      const videoRef = useRef(null);
+
+      useEffect(() => {
+        if (videoRef.current) {
+          videoRef.current.playbackRate = 0.75;
+        }
+
+        const updateWidth = () => {
+          if (containerRef.current) {
+            setContainerWidth(containerRef.current.clientWidth);
+          }
+        };
+
+        const handleScroll = () => {
+          const lightSectionIds = ['doctor', 'about', 'healthy-smiles', 'services', 'stats', 'testimonials', 'appointment'];
+          let overLight = false;
+
+          const elAtPoint = document.elementFromPoint(window.innerWidth / 2, 60);
+          if (elAtPoint) {
+            const closestSection = elAtPoint.closest('section');
+            if (closestSection && lightSectionIds.includes(closestSection.id)) {
+              overLight = true;
+            }
+          }
+
+          if (!overLight) {
+            for (const id of lightSectionIds) {
+              const el = document.getElementById(id);
+              if (el) {
+                const rect = el.getBoundingClientRect();
+                if (rect.top <= 80 && rect.bottom >= 80) {
+                  overLight = true;
+                  break;
+                }
+              }
+            }
+          }
+
+          setIsLightSection(overLight);
+        };
+
+        updateWidth();
+        handleScroll();
+        window.addEventListener('resize', updateWidth);
+        window.addEventListener('scroll', handleScroll, { passive: true });
+        return () => {
+          window.removeEventListener('resize', updateWidth);
+          window.removeEventListener('scroll', handleScroll);
+        };
+      }, []);
+
+      const scrollToBooking = () => {
+        document.getElementById('appointment')?.scrollIntoView({ behavior: 'smooth' });
+      };
+
+      const videoPath = "images/Create_an_ultra_luxury_cinemat.mp4";
+      const doctorImg = "images/Dr. Melvin Raj.png";
+      const leftImg = "images/LEFT SIDE.png";
+      const rightImg = "images/RIGHT SIDE.png";
+
+      const smileFeatures = [
+        { title: 'General Dentistry', subtitle: 'Comprehensive Care', desc: 'Preventive checkups, digital diagnostics, scaling, and complete oral wellness.', svg: '<path d="M12 2C9.5 2 7.5 3.5 6.5 5.5C5.5 7.5 5.5 10.5 6 13C6.5 15.5 7.5 19.5 9 21.5C9.5 22.2 10.5 22 11 21C11.5 20 12 18 12 16.5C12 18 12.5 20 13 21C13.5 22 14.5 22.2 15 21.5C16.5 19.5 17.5 15.5 18 13C18.5 10.5 18.5 7.5 17.5 5.5C16.5 3.5 14.5 2 12 2Z" /><path d="M12 6V10M10 8H14" stroke-width="1.8"/>' },
+        { title: 'Urgent Surgery', subtitle: 'Emergency Relief', desc: 'Immediate pain management, emergency tooth extractions, and trauma protocols.', svg: '<path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" /><path d="M12 8V16M8 12H16" stroke-width="2.2"/>' },
+        { title: 'Dental Implants', subtitle: 'Permanent Restoration', desc: 'Single-tooth & full-arch titanium implants engineered for lifetime stability.', svg: '<path d="M12 2C9.5 2 8 3.5 8 6C8 9 9.5 11 12 12C14.5 11 16 9 16 6C16 3.5 14.5 2 12 2Z" /><path d="M10 12V22M14 12V22M10 15H14M10 18H14M11 21H13" stroke-width="2"/>' },
+        { title: 'Tooth Whitening', subtitle: 'Laser Brightening', desc: 'Advanced laser smile whitening eliminating deep stains for a luminous smile.', svg: '<path d="M12 3L13.8 8.2L19 10L13.8 11.8L12 17L10.2 11.8L5 10L10.2 8.2L12 3Z" /><path d="M19 17L19.9 19.1L22 20L19.9 20.9L19 23L18.1 20.9L16 20L18.1 19.1L19 17Z" /><path d="M5 2L5.6 3.4L7 4L5.6 4.6L5 6L4.4 4.6L3 4L4.4 3.4L5 2Z" />' },
+        { title: 'Prosthesis', subtitle: 'Crowns & Bridges', desc: 'Precision-milled ceramic crowns, fixed bridges, and full mouth prosthetics.', svg: '<path d="M3 18L5 8L9 12L12 5L15 12L19 8L21 18H3Z" /><circle cx="12" cy="18" r="1.5" fill="currentColor" /><circle cx="7" cy="18" r="1.5" fill="currentColor" /><circle cx="17" cy="18" r="1.5" fill="currentColor" />' },
+        { title: 'Dental Braces', subtitle: 'Aligners & Braces', desc: 'Aesthetic clear invisible aligners, metal braces, and orthodontic realignment.', svg: '<path d="M3 12C3 12 7 7 12 7C17 7 21 12 21 12C21 12 17 17 12 17C7 17 3 12 3 12Z" /><path d="M6 10.5V13.5M12 9.5V14.5M18 10.5V13.5M3 12H21" stroke-width="2"/>' },
+      ];
+
+      const services = [
+        { id: '01', title: 'Restorative & Esthetic Dentistry', subtitle: 'COMPOSITE RESTORATIONS', desc: 'Tooth-colored composite restorations, ceramic veneers, and aesthetic tooth re-shaping to restore natural appearance.', badge: 'Esthetics', img: 'images/Restorative%20and%20Esthetic%20Dentistry.png' },
+        { id: '02', title: 'Endodontic Treatment (RCT)', subtitle: 'SINGLE-SITTING ROOT CANAL', desc: 'Advanced motorized rotary endodontic treatment eliminating tooth pain while preserving natural root structure in just one visit.', badge: 'Endodontics', img: 'images/Endodontic%20Treatment%20(RCT).png' },
+        { id: '03', title: 'Paediatric Dentistry', subtitle: 'SPECIALIZED CHILD CARE', desc: 'Gentle preventive checkups, fluoridation, pit and fissure sealants, and child-friendly dental care.', badge: 'Child Care', img: 'images/Paediatric%20Dentistry.png' },
+        { id: '04', title: 'Orthodontic Treatment', subtitle: 'BRACES & CLEAR ALIGNERS', desc: 'Correction of crowded teeth, malocclusions, gap closure, and aesthetic clear aligners.', badge: 'Orthodontics', img: 'images/Orthodontic%20Treatment.png' },
+        { id: '05', title: 'Periodontal Treatment', subtitle: 'ULTRASONIC GUM THERAPY', desc: 'Treatment of bleeding gums, periodontitis, deep scaling, and laser flap therapy.', badge: 'Periodontics', img: 'images/Periodontal%20Treatment.png' },
+        { id: '06', title: 'Prosthetic & Implant Dentistry', subtitle: 'TITANIUM DENTAL IMPLANTS', desc: 'Permanent titanium dental implants, fixed bridges, and full mouth prosthetics engineered to replace missing teeth.', badge: 'Implants', img: 'images/Prosthetic%20and%20Implant%20Dentistry.png' },
+        { id: '07', title: 'Minor Oral Surgical Procedures', subtitle: 'OUTPATIENT SURGERY', desc: 'Outpatient clinical surgical procedures including frenectomy, apicoectomy, and cyst excision.', badge: 'Surgery', img: 'images/Minor%20oral%20surgical%20Procedures.png' },
+        { id: '08', title: 'Wisdom Tooth Removal', subtitle: 'IMPACTED MOLAR EXTRACTION', desc: 'Painless, gentle surgical extraction of impacted or painful wisdom teeth with rapid recovery.', badge: 'Extractions', img: 'images/Wisdom%20Tooth%20Removal.png' },
+      ];
+
+      return (
+        <div className="relative min-h-screen bg-[#FAFAFC]">
+          <LoadingScreen onComplete={() => setLoaded(true)} />
+
+          {/* Dynamic Navbar */}
+          <header className="fixed top-0 left-0 right-0 z-40 px-6 py-4 transition-colors duration-500">
+            <div className="max-w-7xl mx-auto flex items-center justify-between w-full">
+              
+              <a href="#hero" className="flex items-center gap-3 shrink-0">
+                <div className={`w-10 h-10 rounded-full border flex items-center justify-center transition-all duration-500 ${isLightSection ? 'bg-slate-950 border-slate-900 text-yellow-400 shadow-md' : 'bg-black/40 border-yellow-500 text-yellow-400 shadow-lg'}`}>
+                  <svg
+                    viewBox="0 0 100 100"
+                    className="w-5 h-5 text-yellow-400 fill-yellow-400/20"
+                    stroke="currentColor"
+                    strokeWidth="6"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <path d="M 26 28 C 16 12, 44 14, 50 22 C 56 14, 84 12, 74 28 C 68 45, 78 68, 68 90 C 60 90, 55 58, 50 48 C 45 58, 40 90, 32 90 C 22 68, 32 45, 26 28 Z" />
+                  </svg>
+                </div>
+                <div className="flex flex-col whitespace-nowrap">
+                  <span className={`font-serif text-xl tracking-[0.2em] font-bold whitespace-nowrap transition-colors duration-500 ${isLightSection ? 'text-slate-950 font-black' : 'text-white drop-shadow-lg'}`}>MERCY</span>
+                  <span className={`font-sans text-[9px] tracking-[0.25em] uppercase font-bold whitespace-nowrap transition-colors duration-500 ${isLightSection ? 'text-yellow-700' : 'text-yellow-400'}`}>Dental Clinic • Madurai</span>
+                </div>
+              </a>
+
+              <nav className={`hidden lg:flex items-center gap-6 xl:gap-8 px-7 py-2.5 rounded-full backdrop-blur-xl border shadow-2xl transition-all duration-500 shrink-0 ${isLightSection ? 'bg-white/95 border-slate-300 text-slate-950 shadow-slate-900/10' : 'bg-black/60 border-white/20 text-white shadow-black/40'}`}>
+                <a href="#hero" className={`text-xs uppercase tracking-widest font-bold transition-colors whitespace-nowrap ${isLightSection ? 'text-slate-950 hover:text-yellow-700' : 'text-white hover:text-yellow-400'}`}>Dental Care</a>
+                <a href="#doctor" className={`text-xs uppercase tracking-widest font-bold transition-colors whitespace-nowrap ${isLightSection ? 'text-slate-950 hover:text-yellow-700' : 'text-white hover:text-yellow-400'}`}>Dr. Melvin Raj</a>
+                <a href="#services" className={`text-xs uppercase tracking-widest font-bold transition-colors whitespace-nowrap ${isLightSection ? 'text-slate-950 hover:text-yellow-700' : 'text-white hover:text-yellow-400'}`}>Our Services</a>
+                <a href="#transformation" className={`text-xs uppercase tracking-widest font-bold transition-colors whitespace-nowrap ${isLightSection ? 'text-slate-950 hover:text-yellow-700' : 'text-white hover:text-yellow-400'}`}>Results</a>
+                <a href="#appointment" className={`text-xs uppercase tracking-widest font-bold transition-colors whitespace-nowrap ${isLightSection ? 'text-slate-950 hover:text-yellow-700' : 'text-white hover:text-yellow-400'}`}>Book Appointment</a>
+              </nav>
+
+              <button
+                onClick={scrollToBooking}
+                className={`hidden sm:inline-block px-6 py-2.5 text-xs uppercase tracking-[0.18em] font-bold rounded-full shadow-lg hover:scale-105 transition-all whitespace-nowrap shrink-0 ${isLightSection ? 'bg-slate-950 text-white hover:bg-yellow-700' : 'bg-gradient-to-r from-yellow-400 via-yellow-300 to-yellow-500 text-slate-950'}`}
+              >
+                Book Appointment
+              </button>
+            </div>
+          </header>
+
+          {/* Hero Section with Native 1:1 HD Scale */}
+          <section id="hero" className="relative min-h-screen pt-36 pb-16 px-6 md:px-16 flex flex-col justify-between bg-slate-950 overflow-hidden">
+            <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
+              <video
+                ref={videoRef}
+                autoPlay
+                loop
+                muted
+                playsInline
+                className="absolute inset-0 w-full h-full object-cover object-center scale-100 opacity-95"
+              >
+                <source src={videoPath} type="video/mp4" />
+              </video>
+            </div>
+
+            <div className="absolute inset-0 bg-gradient-to-r from-slate-950/75 via-slate-950/20 to-transparent pointer-events-none z-0" />
+            <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent pointer-events-none z-0" />
+
+            <div className="max-w-7xl mx-auto w-full z-10 relative grid grid-cols-1 lg:grid-cols-12 gap-8 items-center my-auto">
+              <div className="lg:col-span-8 text-white">
+                <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-black/30 backdrop-blur-md border border-yellow-500/40 mb-6 shadow-lg">
+                  <span className="w-2 h-2 rounded-full bg-yellow-400 animate-ping" />
+                  <span className="text-[10px] uppercase tracking-[0.25em] text-yellow-300 font-bold">MADURAI'S PREMIER DENTAL CARE CENTER • NEW NATHAM ROAD</span>
+                </div>
+                <h1 className="font-serif text-4xl sm:text-6xl xl:text-7xl font-light leading-[1.08] text-white mb-6 drop-shadow-[0_8px_20px_rgba(0,0,0,0.8)] tracking-tight">
+                  Pioneering Digital Dentistry & <br />
+                  <span className="italic font-normal text-gold-gradient">Advanced Implantology.</span>
+                </h1>
+                <p className="text-slate-100 text-sm md:text-base max-w-xl font-normal leading-relaxed mb-10 drop-shadow-[0_4px_12px_rgba(0,0,0,0.9)]">
+                  Under Dr. Melvin Raj, Mercy Dental Clinic delivers single-sitting root canals, dental implants, laser whitening, and wisdom tooth extractions in Tiruppalai, Madurai.
+                </p>
+                <div className="flex items-center gap-5">
+                  <button
+                    onClick={scrollToBooking}
+                    className="px-8 py-4 rounded-full bg-gradient-to-r from-yellow-400 via-yellow-300 to-yellow-500 text-slate-950 text-xs uppercase tracking-[0.22em] font-bold shadow-[0_10px_30px_rgba(212,175,55,0.4)] hover:scale-105 transition-all"
+                  >
+                    Book Dental Appointment
+                  </button>
+                  <a href="#doctor" className="px-7 py-3.5 rounded-full bg-black/30 backdrop-blur-md border border-white/25 hover:border-yellow-400 text-xs uppercase tracking-[0.2em] font-bold text-white hover:text-yellow-400 transition-all">
+                    Dr. Melvin Raj Profile →
+                  </a>
+                </div>
+              </div>
+            </div>
+
+            {/* Bottom Metrics */}
+            <div className="max-w-7xl mx-auto w-full z-10 relative flex flex-col md:flex-row items-center justify-between gap-6 pt-10 border-t border-white/10">
+              <div className="flex items-center gap-8 md:gap-14">
+                <div className="flex flex-col items-start">
+                  <span className="font-serif text-3xl md:text-4xl text-gold-gradient font-bold">99.8%</span>
+                  <span className="text-[9px] uppercase tracking-widest text-slate-300 font-bold mt-1">Patient Satisfaction</span>
+                </div>
+                <div className="w-[1px] h-8 bg-white/15" />
+                <div className="flex flex-col items-start">
+                  <span className="font-serif text-3xl md:text-4xl text-white font-bold">15+</span>
+                  <span className="text-[9px] uppercase tracking-widest text-slate-300 font-bold mt-1">Years Practice</span>
+                </div>
+                <div className="w-[1px] h-8 bg-white/15" />
+                <div className="flex flex-col items-start">
+                  <span className="font-serif text-3xl md:text-4xl text-white font-bold">10K+</span>
+                  <span className="text-[9px] uppercase tracking-widest text-slate-300 font-bold mt-1">Successful Procedures</span>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          {/* Doctor Reveal Section */}
+          <section id="doctor" className="py-28 px-6 bg-[#FAFBFD] text-slate-900">
+            <div className="max-w-7xl mx-auto">
+              <div className="text-center max-w-2xl mx-auto mb-16">
+                <span className="text-xs uppercase tracking-[0.3em] text-yellow-700 font-bold">Chief Dental Surgeon & Implantologist</span>
+                <h2 className="font-serif text-4xl font-light text-slate-900 mt-2">Meet <span className="italic font-normal text-gold-gradient">Dr. Melvin Raj</span></h2>
+              </div>
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+                <div className="lg:col-span-6 flex justify-center">
+                  <div className="relative w-full max-w-md aspect-[3/4] rounded-3xl overflow-hidden border border-yellow-500/40 p-8 flex flex-col justify-end bg-slate-950 text-white shadow-2xl group">
+                    <img src={doctorImg} alt="Dr. Melvin Raj, BDS, MDS" className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-1000" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/20 to-transparent pointer-events-none" />
+                    <div className="relative z-10">
+                      <span className="text-[10px] uppercase tracking-widest text-yellow-400 font-bold">Founder & Chief Surgeon</span>
+                      <h3 className="font-serif text-3xl font-light mt-1">Dr. Melvin Raj, BDS, MDS</h3>
+                      <p className="text-xs text-slate-200 mt-2">Specialist in Single-Sitting RCT & Dental Implants</p>
+                    </div>
+                  </div>
+                </div>
+                <div className="lg:col-span-6 flex flex-col gap-6">
+                  <div className="p-8 rounded-3xl bg-white border border-yellow-500/30 shadow-lg">
+                    <p className="font-serif italic text-xl text-slate-900 leading-relaxed font-medium">
+                      "Our mission at Mercy Dental Clinic is to combine painless treatment protocols with digital accuracy so every patient leaves with a healthy, radiant smile."
+                    </p>
+                    <div className="mt-6 flex items-center gap-4">
+                      <div className="w-12 h-12 rounded-full border border-yellow-500 overflow-hidden bg-slate-950 flex-shrink-0">
+                        <img src={doctorImg} alt="Dr. Melvin Raj" className="w-full h-full object-cover" />
+                      </div>
+                      <div>
+                        <div className="text-xs uppercase tracking-widest font-bold text-slate-900">Dr. Melvin Raj</div>
+                        <div className="text-[10px] text-slate-600 font-medium">Chief Surgeon, Mercy Dental Clinic Madurai</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          {/* Healthy Smiles Everyday Section */}
+          <section id="healthy-smiles" className="py-24 px-6 md:px-12 bg-[#FAFBFD] text-slate-900 relative overflow-hidden">
+            <div className="max-w-7xl mx-auto">
+              <div className="text-center max-w-2xl mx-auto mb-16">
+                <span className="text-xs uppercase tracking-[0.35em] text-yellow-700 font-bold">Mercy Dental Care Principles</span>
+                <h2 className="font-serif text-4xl md:text-5xl font-light text-slate-900 mt-2">Healthy Smiles <span className="font-bold italic text-gold-gradient">Everyday!</span></h2>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                {smileFeatures.map((item, idx) => (
+                  <div key={idx} className="p-8 rounded-[32px] bg-white border border-slate-200 shadow-xl hover:shadow-2xl transition-all duration-400 flex flex-col justify-between group relative overflow-hidden">
+                    <div className="absolute top-0 left-0 right-0 h-2 bg-gradient-to-r from-amber-500/20 to-yellow-500/10" />
+                    <div>
+                      <div className="w-16 h-16 rounded-2xl bg-slate-950 border border-yellow-500/40 flex items-center justify-center text-yellow-400 shadow-lg mb-6 group-hover:scale-110 transition-transform">
+                        <svg className="w-8 h-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" dangerouslySetInnerHTML={{ __html: item.svg }} />
+                      </div>
+                      <span className="text-[10px] uppercase tracking-widest text-yellow-700 font-bold">{item.subtitle}</span>
+                      <h3 className="font-serif text-2xl font-bold text-slate-900 mt-1 mb-3 group-hover:text-yellow-700 transition-colors">{item.title}</h3>
+                      <p className="text-xs text-slate-600 font-normal leading-relaxed">{item.desc}</p>
+                    </div>
+                    <div className="mt-8 pt-4 border-t border-slate-100 flex items-center justify-between">
+                      <span className="text-[11px] uppercase tracking-wider font-bold text-slate-800">Specialized Treatment</span>
+                      <span className="text-yellow-700 font-bold group-hover:translate-x-1 transition-transform">→</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              <div className="mt-16 text-center">
+                <button onClick={scrollToBooking} className="px-10 py-4 rounded-full bg-slate-950 hover:bg-yellow-700 text-white text-xs uppercase tracking-[0.25em] font-bold shadow-xl hover:scale-105 transition-all">
+                  Learn More Services →
+                </button>
+              </div>
+            </div>
+          </section>
+
+          {/* Our Services Section */}
+          <section id="services" className="py-28 px-6 bg-[#F1F3F7] text-slate-900">
+            <div className="max-w-7xl mx-auto">
+              <div className="text-center max-w-2xl mx-auto mb-16">
+                <span className="text-xs uppercase tracking-[0.3em] text-yellow-700 font-bold">Mercy Dental Clinic Services</span>
+                <h2 className="font-serif text-4xl font-light text-slate-900 mt-2">Our <span className="italic font-normal text-gold-gradient">Clinical Services</span></h2>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                {services.map((item, idx) => (
+                  <div key={idx} className="relative h-[440px] rounded-[32px] overflow-hidden cursor-pointer shadow-xl transition-all duration-500 border border-slate-300/60 hover:border-yellow-500 group flex flex-col justify-between p-6">
+                    <img src={item.img} alt={item.title} className="absolute inset-0 w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-1000 z-0" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/50 to-slate-950/20 pointer-events-none z-10" />
+                    
+                    <div className="relative z-20 flex items-center justify-between w-full">
+                      <span className="px-3 py-1 rounded-full text-[9px] uppercase tracking-widest font-bold bg-black/60 text-yellow-300 border border-yellow-500/40 backdrop-blur-md shadow-md">{item.badge}</span>
+                      <span className="font-serif text-2xl text-yellow-400 font-bold drop-shadow-lg">{item.id}</span>
+                    </div>
+
+                    <div className="relative z-20 flex flex-col justify-end text-white">
+                      <span className="text-[10px] text-yellow-300 uppercase tracking-[0.2em] font-bold mb-1">{item.subtitle}</span>
+                      <h3 className="font-serif text-xl md:text-2xl font-bold text-white mb-2 leading-tight drop-shadow-md">{item.title}</h3>
+                      <p className="text-xs text-slate-200 font-normal leading-relaxed mb-4 opacity-90 line-clamp-3">{item.desc}</p>
+                      <button onClick={scrollToBooking} className="w-full py-3 rounded-full bg-white/10 hover:bg-yellow-400 text-white hover:text-slate-950 font-sans text-[11px] uppercase tracking-widest font-bold border border-white/20 hover:border-yellow-400 backdrop-blur-md transition-all duration-300 flex items-center justify-center gap-2 shadow-lg">
+                        <span>Book Consultation</span>
+                        <span>→</span>
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </section>
+
+          {/* Smile Transformation Section */}
+          <section id="transformation" className="py-28 px-6 bg-slate-950 text-white">
+            <div className="max-w-7xl mx-auto">
+              <div className="text-center max-w-2xl mx-auto mb-12">
+                <span className="text-xs uppercase tracking-[0.3em] text-yellow-400 font-bold">Mercy Dental Clinic • Madurai</span>
+                <h2 className="font-serif text-4xl font-light mt-2">Smile <span className="italic font-normal text-gold-gradient">Restoration Assessment</span></h2>
+              </div>
+
+              <div className="relative w-full max-w-4xl mx-auto rounded-3xl overflow-hidden bg-slate-900 border border-yellow-500/40 shadow-2xl p-6 md:p-10">
+                <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mb-6 pb-4 border-b border-white/10">
+                  <div className="flex items-center gap-2">
+                    <span className="w-2.5 h-2.5 rounded-full bg-slate-400" />
+                    <span className="text-xs uppercase tracking-widest text-slate-300 font-bold">
+                      BEFORE: Initial State (LEFT SIDE)
+                    </span>
+                  </div>
+
+                  <div className="font-serif text-lg text-yellow-400 font-bold">
+                    Single-Sitting RCT & Whitening
+                  </div>
+
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs uppercase tracking-widest text-yellow-300 font-bold">
+                      AFTER: Restored Result (RIGHT SIDE)
+                    </span>
+                    <span className="w-2.5 h-2.5 rounded-full bg-yellow-400 animate-pulse" />
+                  </div>
+                </div>
+
+                <div
+                  ref={containerRef}
+                  className="relative w-full aspect-[16/9] md:aspect-[21/9] rounded-2xl overflow-hidden select-none border border-yellow-500/30 shadow-2xl bg-slate-950 cursor-ew-resize"
+                  onMouseMove={(e) => {
+                    const rect = e.currentTarget.getBoundingClientRect();
+                    const x = Math.max(0, Math.min(e.clientX - rect.left, rect.width));
+                    setSliderPos((x / rect.width) * 100);
+                  }}
+                  onTouchMove={(e) => {
+                    const rect = e.currentTarget.getBoundingClientRect();
+                    const x = Math.max(0, Math.min(e.touches[0].clientX - rect.left, rect.width));
+                    setSliderPos((x / rect.width) * 100);
+                  }}
+                >
+                  <img
+                    src={rightImg}
+                    alt="Restored Result Right Side"
+                    className="absolute inset-0 w-full h-full object-cover pointer-events-none"
+                  />
+
+                  <div
+                    className="absolute inset-y-0 left-0 overflow-hidden border-r-2 border-yellow-400 shadow-2xl"
+                    style={{ width: `${sliderPos}%` }}
+                  >
+                    <img
+                      src={leftImg}
+                      alt="Initial State Left Side"
+                      className="absolute top-0 left-0 h-full max-w-none object-cover pointer-events-none"
+                      style={{ width: `${containerWidth}px` }}
+                    />
+                  </div>
+
+                  <div
+                    className="absolute top-0 bottom-0 w-1 bg-yellow-400 pointer-events-none flex items-center justify-center"
+                    style={{ left: `${sliderPos}%` }}
+                  >
+                    <div className="w-9 h-9 rounded-full bg-yellow-400 text-slate-950 flex items-center justify-center text-xs font-bold shadow-2xl border-2 border-white">
+                      ↔
+                    </div>
+                  </div>
+                </div>
+
+                <div className="mt-4 text-center font-sans text-[11px] text-slate-400 uppercase tracking-widest font-bold">
+                  ◄ Drag Slider Left or Right to Compare Patient Smile Results ►
+                </div>
+              </div>
+            </div>
+          </section>
+
+          {/* Appointment Section */}
+          <section id="appointment" className="py-28 px-6 bg-white text-slate-900">
+            <div className="max-w-3xl mx-auto p-10 rounded-3xl bg-[#FAFBFD] border border-yellow-500/40 shadow-xl">
+              <div className="text-center mb-8">
+                <span className="text-xs uppercase tracking-[0.3em] text-yellow-700 font-bold">Mercy Dental Clinic • Madurai Center</span>
+                <h2 className="font-serif text-3xl font-light text-slate-900 mt-1">Book Your <span className="italic font-normal text-gold-gradient">Dental Intake</span></h2>
+              </div>
+              <form onSubmit={(e) => { e.preventDefault(); alert("Appointment Request Received! Dr. Melvin Raj's team will call you shortly."); }} className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <input type="text" placeholder="Patient Full Name" className="p-4 rounded-xl bg-white border border-slate-300 text-slate-900 text-sm focus:outline-none focus:border-yellow-600 font-medium" required />
+                <input type="tel" placeholder="Contact Phone / WhatsApp" className="p-4 rounded-xl bg-white border border-slate-300 text-slate-900 text-sm focus:outline-none focus:border-yellow-600 font-medium" required />
+                <input type="text" readOnly value="Tiruppalai, New Natham Road, Madurai" className="p-4 rounded-xl bg-slate-100 border border-slate-300 text-slate-800 text-sm font-bold md:col-span-2" />
+                <select className="p-4 rounded-xl bg-white border border-slate-300 text-slate-900 text-sm focus:outline-none focus:border-yellow-600 md:col-span-2 font-medium">
+                  <option>Restorative and Esthetic Dentistry</option>
+                  <option>Endodontic Treatment (Root Canal)</option>
+                  <option>Paediatric Dentistry</option>
+                  <option>Orthodontic Treatment (Braces & Aligners)</option>
+                  <option>Periodontal Treatment (Gum Care)</option>
+                  <option>Prosthetic and Implant Dentistry</option>
+                  <option>Minor Oral Surgical Procedures</option>
+                  <option>Wisdom Tooth Removal</option>
+                </select>
+                <button type="submit" className="md:col-span-2 py-4 rounded-full bg-slate-950 text-white text-xs uppercase tracking-[0.25em] font-bold hover:bg-slate-900">
+                  Confirm Appointment Request
+                </button>
+              </form>
+            </div>
+          </section>
+
+          {/* Footer */}
+          <footer className="bg-[#030304] text-white py-12 px-6 border-t border-yellow-500/20 text-center font-sans text-xs tracking-widest uppercase font-bold">
+            © {new Date().getFullYear()} Mercy Dental Clinic. No. 582, Tagore Nagar, New Natham Road, Tiruppalai, Madurai - 625014
+          </footer>
+        </div>
+      );
+    }
+
+    ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+  </script>
+</body>
+</html>

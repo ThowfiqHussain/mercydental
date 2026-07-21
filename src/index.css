@@ -1,0 +1,262 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ─── Root ───────────────────────────────────────────────────── */
+:root {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  color-scheme: light;
+  --gold: #D4AF37;
+  --gold-deep: #B8860B;
+  --gold-glow: #FCE762;
+  --pearl: #FAFAFC;
+  cursor: none;
+}
+
+/* ─── Lenis Smooth Scroll ────────────────────────────────────── */
+html.lenis, html.lenis body { height: auto; }
+.lenis.lenis-smooth { scroll-behavior: auto !important; }
+.lenis.lenis-smooth [data-lenis-prevent] { overscroll-behavior: contain; }
+.lenis.lenis-stopped { overflow: hidden; }
+
+/* ─── Base ───────────────────────────────────────────────────── */
+html { scroll-behavior: smooth; }
+
+body {
+  margin: 0; padding: 0;
+  background-color: #FAFAFC;
+  color: #1E202B;
+  overflow-x: hidden;
+  cursor: none;
+}
+
+* { cursor: none !important; }
+
+::selection { background-color: rgba(212,175,55,0.2); color: #B8860B; }
+
+/* ─── Gold Text Gradient ─────────────────────────────────────── */
+.text-gold-gradient {
+  background: linear-gradient(135deg, #9A741A 0%, #D4AF37 40%, #F5E5C0 70%, #B8860B 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.text-silver-gradient {
+  background: linear-gradient(135deg, #1E202B 0%, #64748B 50%, #94A3B8 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* ─── Glassmorphism ──────────────────────────────────────────── */
+.glass-panel {
+  background: rgba(255,255,255,0.65);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255,255,255,0.8);
+  box-shadow: 0 20px 50px rgba(0,0,0,0.04), 0 1px 3px rgba(212,175,55,0.08);
+}
+
+.glass-panel-dark {
+  background: rgba(11,12,16,0.75);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(212,175,55,0.15);
+  box-shadow: 0 30px 60px rgba(0,0,0,0.3);
+}
+
+.glass-card-gold {
+  background: linear-gradient(135deg, rgba(255,255,255,0.92) 0%, rgba(253,248,237,0.65) 100%);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(212,175,55,0.3);
+  box-shadow: 0 15px 35px rgba(212,175,55,0.07);
+  transition: all 0.5s cubic-bezier(0.16,1,0.3,1);
+}
+.glass-card-gold:hover {
+  border-color: rgba(212,175,55,0.65);
+  box-shadow: 0 25px 60px rgba(212,175,55,0.18);
+  transform: translateY(-6px);
+}
+
+/* ─── Clip-Path Reveal ───────────────────────────────────────── */
+.clip-reveal {
+  clip-path: inset(100% 0 0 0);
+  transition: clip-path 1.1s cubic-bezier(0.16,1,0.3,1);
+}
+.clip-reveal.in-view {
+  clip-path: inset(0% 0 0 0);
+}
+
+.clip-reveal-left {
+  clip-path: inset(0 100% 0 0);
+  transition: clip-path 1.2s cubic-bezier(0.16,1,0.3,1);
+}
+.clip-reveal-left.in-view {
+  clip-path: inset(0 0% 0 0);
+}
+
+/* ─── Word / Char Reveal ─────────────────────────────────────── */
+.word-reveal-wrap {
+  overflow: hidden;
+  display: inline-block;
+}
+.word-reveal {
+  display: inline-block;
+  transform: translateY(110%);
+  transition: transform 0.85s cubic-bezier(0.16,1,0.3,1);
+}
+.word-reveal.in-view {
+  transform: translateY(0);
+}
+
+/* ─── Gold Shimmer Line ──────────────────────────────────────── */
+.gold-line {
+  position: relative;
+  overflow: hidden;
+  height: 1px;
+  background: rgba(212,175,55,0.15);
+}
+.gold-line::after {
+  content: '';
+  position: absolute;
+  top: 0; left: -100%;
+  width: 100%; height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(212,175,55,0.9), transparent);
+  animation: goldLineSweep 3s ease-in-out infinite;
+}
+@keyframes goldLineSweep {
+  0%   { left: -100%; }
+  100% { left: 200%; }
+}
+
+/* ─── Section Gold Accent Bars ───────────────────────────────── */
+.section-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--gold-deep);
+}
+.section-tag::before {
+  content: '';
+  display: block;
+  width: 28px; height: 1.5px;
+  background: linear-gradient(90deg, var(--gold), transparent);
+  border-radius: 999px;
+}
+
+/* ─── Floating Gold Particles ────────────────────────────────── */
+@keyframes floatDust {
+  0%   { transform: translateY(0)   translateX(0)     scale(1);   opacity: 0.7; }
+  33%  { transform: translateY(-30px) translateX(8px)  scale(1.1); opacity: 1; }
+  66%  { transform: translateY(-55px) translateX(-6px) scale(0.9); opacity: 0.5; }
+  100% { transform: translateY(-90px) translateX(4px)  scale(0.7); opacity: 0; }
+}
+.dust-particle {
+  position: absolute;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(252,231,98,0.95), rgba(212,175,55,0.4), transparent);
+  pointer-events: none;
+  animation: floatDust linear infinite;
+  will-change: transform, opacity;
+}
+
+/* ─── Gold Ambient Orb ───────────────────────────────────────── */
+@keyframes orbFloat {
+  0%, 100% { transform: translate(-50%,-50%) scale(1); }
+  50%       { transform: translate(-50%,-50%) scale(1.08); }
+}
+.ambient-orb {
+  animation: orbFloat 8s ease-in-out infinite;
+}
+
+/* ─── Horizontal Scroll Track ────────────────────────────────── */
+.h-scroll-track {
+  display: flex;
+  gap: 1.5rem;
+  will-change: transform;
+}
+
+/* ─── Number Counter ─────────────────────────────────────────── */
+@keyframes countUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ─── Gold Pulse ─────────────────────────────────────────────── */
+@keyframes goldPulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(212,175,55,0); }
+  50%       { box-shadow: 0 0 30px 10px rgba(212,175,55,0.22); }
+}
+.gold-pulse { animation: goldPulse 2.8s ease-in-out infinite; }
+
+/* ─── Shimmer Card ───────────────────────────────────────────── */
+.shimmer-card {
+  position: relative; overflow: hidden;
+}
+.shimmer-card::after {
+  content: '';
+  position: absolute; top: -50%; left: -50%;
+  width: 200%; height: 200%;
+  background: linear-gradient(60deg, transparent 30%, rgba(255,255,255,0.08) 50%, transparent 70%);
+  transform: rotate(30deg) translate(-100%, -100%);
+  transition: transform 0.8s cubic-bezier(0.16,1,0.3,1);
+}
+.shimmer-card:hover::after {
+  transform: rotate(30deg) translate(100%, 100%);
+}
+
+/* ─── Magnetic Button ────────────────────────────────────────── */
+.magnetic-btn {
+  transition: transform 0.3s cubic-bezier(0.16,1,0.3,1);
+  will-change: transform;
+}
+
+/* ─── Reveal Utilities (Framer viewport backup) ──────────────── */
+.reveal-up {
+  opacity: 0; transform: translateY(50px);
+  transition: opacity 0.9s cubic-bezier(0.16,1,0.3,1), transform 0.9s cubic-bezier(0.16,1,0.3,1);
+}
+.reveal-up.in-view { opacity: 1; transform: translateY(0); }
+
+.reveal-scale {
+  opacity: 0; transform: scale(0.88);
+  transition: opacity 1s cubic-bezier(0.16,1,0.3,1), transform 1s cubic-bezier(0.16,1,0.3,1);
+}
+.reveal-scale.in-view { opacity: 1; transform: scale(1); }
+
+/* Stagger delays */
+.delay-0   { transition-delay:   0ms; }
+.delay-100 { transition-delay: 100ms; }
+.delay-200 { transition-delay: 200ms; }
+.delay-300 { transition-delay: 300ms; }
+.delay-400 { transition-delay: 400ms; }
+.delay-500 { transition-delay: 500ms; }
+.delay-600 { transition-delay: 600ms; }
+
+/* ─── Volumetric Glow ────────────────────────────────────────── */
+.volumetric-glow {
+  position: absolute; border-radius: 50%;
+  filter: blur(80px); pointer-events: none; opacity: 0.6;
+}
+.gold-glow-bg {
+  background: radial-gradient(circle, rgba(212,175,55,0.25) 0%, rgba(253,248,237,0.05) 70%, transparent 100%);
+}
+
+/* ─── Section Divider ────────────────────────────────────────── */
+.section-divider {
+  width: 100%; height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(212,175,55,0.3), transparent);
+}
+
+/* ─── Custom Scrollbar ───────────────────────────────────────── */
+::-webkit-scrollbar        { width: 4px; }
+::-webkit-scrollbar-track  { background: #FAFAFC; }
+::-webkit-scrollbar-thumb  { background: rgba(212,175,55,0.5); border-radius: 999px; }
+::-webkit-scrollbar-thumb:hover { background: #D4AF37; }
