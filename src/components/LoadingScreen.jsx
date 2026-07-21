@@ -5,31 +5,85 @@ export default function LoadingScreen({ onLoadingComplete }) {
   const [progress, setProgress] = useState(0);
   const [isDone, setIsDone] = useState(false);
 
+  // Function to finish loading immediately on user scroll/gesture
+  const triggerFinish = () => {
+    setIsDone((alreadyDone) => {
+      if (!alreadyDone) {
+        if (onLoadingComplete) onLoadingComplete();
+        return true;
+      }
+      return true;
+    });
+  };
+
   useEffect(() => {
+    // Auto-progress timer
     const timer = setInterval(() => {
       setProgress((prev) => {
         if (prev >= 100) {
           clearInterval(timer);
           setTimeout(() => {
-            setIsDone(true);
-            if (onLoadingComplete) onLoadingComplete();
-          }, 500);
+            triggerFinish();
+          }, 300);
           return 100;
         }
-        return prev + Math.floor(Math.random() * 12) + 6;
+        return prev + Math.floor(Math.random() * 14) + 8;
       });
-    }, 120);
+    }, 100);
 
-    return () => clearInterval(timer);
+    // Scroll & Wheel listeners to transition directly into hero section on scroll
+    let startY = 0;
+
+    const handleWheel = (e) => {
+      if (e.deltaY > 5) {
+        triggerFinish();
+      }
+    };
+
+    const handleTouchStart = (e) => {
+      if (e.touches && e.touches[0]) {
+        startY = e.touches[0].clientY;
+      }
+    };
+
+    const handleTouchMove = (e) => {
+      if (e.touches && e.touches[0]) {
+        const currentY = e.touches[0].clientY;
+        if (startY - currentY > 10) {
+          triggerFinish();
+        }
+      }
+    };
+
+    const handleKeyDown = (e) => {
+      if (['ArrowDown', 'PageDown', ' ', 'Enter'].includes(e.key)) {
+        triggerFinish();
+      }
+    };
+
+    window.addEventListener('wheel', handleWheel, { passive: true });
+    window.addEventListener('touchstart', handleTouchStart, { passive: true });
+    window.addEventListener('touchmove', handleTouchMove, { passive: true });
+    window.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      clearInterval(timer);
+      window.removeEventListener('wheel', handleWheel);
+      window.removeEventListener('touchstart', handleTouchStart);
+      window.removeEventListener('touchmove', handleTouchMove);
+      window.removeEventListener('keydown', handleKeyDown);
+    };
   }, [onLoadingComplete]);
 
   return (
     <AnimatePresence>
       {!isDone && (
         <motion.div
-          exit={{ opacity: 0, scale: 1.05 }}
-          transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-          className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-obsidian-pure text-white"
+          initial={{ y: 0, opacity: 1 }}
+          exit={{ y: '-100%', opacity: 0.95 }}
+          transition={{ duration: 0.85, ease: [0.16, 1, 0.3, 1] }}
+          onClick={triggerFinish}
+          className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-obsidian-pure text-white cursor-pointer select-none"
         >
           {/* Exact 2-Root Molar Logo Icon */}
           <motion.div
@@ -65,7 +119,7 @@ export default function LoadingScreen({ onLoadingComplete }) {
             initial={{ y: 20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ duration: 0.8, delay: 0.3 }}
-            className="font-sans text-xs tracking-[0.35em] uppercase text-slate-300 font-semibold mb-12 text-center"
+            className="font-sans text-xs tracking-[0.35em] uppercase text-slate-300 font-semibold mb-12 text-center px-4"
           >
             Mercy Dental Clinic • Madurai Center
           </motion.p>
@@ -79,10 +133,29 @@ export default function LoadingScreen({ onLoadingComplete }) {
             />
           </div>
 
-          <div className="flex items-center justify-between w-64 font-sans text-[11px] text-slate-400 uppercase tracking-widest font-bold">
+          <div className="flex items-center justify-between w-64 font-sans text-[11px] text-slate-400 uppercase tracking-widest font-bold mb-8">
             <span>Initializing Experience</span>
             <span className="text-gold-glow font-mono">{progress}%</span>
           </div>
+
+          {/* Interactive Scroll Hint */}
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.4, duration: 0.8 }}
+            className="flex flex-col items-center gap-2 text-gold-glow/80 hover:text-gold-glow transition-colors"
+          >
+            <span className="font-sans text-[9px] uppercase tracking-[0.3em] font-bold">
+              Scroll Down to Enter
+            </span>
+            <motion.div
+              animate={{ y: [0, 6, 0] }}
+              transition={{ duration: 1.4, repeat: Infinity, ease: 'easeInOut' }}
+              className="w-4 h-6 rounded-full border border-gold/40 flex items-start justify-center p-1"
+            >
+              <div className="w-1 h-1.5 bg-gold-glow rounded-full" />
+            </motion.div>
+          </motion.div>
         </motion.div>
       )}
     </AnimatePresence>

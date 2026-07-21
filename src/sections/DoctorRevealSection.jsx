@@ -50,7 +50,7 @@ export default function DoctorRevealSection() {
   return (
     <section
       id="doctor"
-      className="relative py-28 px-4 md:px-12 bg-gradient-to-b from-pearl-100 via-white to-pearl-200 overflow-hidden text-slate-900"
+      className="relative py-28 px-4 md:px-12 bg-white/80 backdrop-blur-md overflow-hidden text-slate-900 border-t border-slate-200/40"
     >
       {/* Volumetric Glow */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] bg-gold-light/15 rounded-full blur-[150px] pointer-events-none" />

@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React from 'react';
 import MagneticCursor from './components/MagneticCursor';
-import LoadingScreen from './components/LoadingScreen';
+import ToothBackgroundCanvas from './components/ToothBackgroundCanvas';
 import Navbar from './components/Navbar';
 import HeroSection from './sections/HeroSection';
 import DoctorRevealSection from './sections/DoctorRevealSection';
@@ -14,8 +14,6 @@ import AppointmentSection from './sections/AppointmentSection';
 import FooterSection from './sections/FooterSection';
 
 export default function App() {
-  const [loading, setLoading] = useState(true);
-
   const handleBookClick = () => {
     if (window.__lenis) {
       window.__lenis.scrollTo('#appointment', { duration: 2.0, offset: -80 });
@@ -26,11 +24,11 @@ export default function App() {
 
   return (
     <div className="relative min-h-screen bg-pearl-DEFAULT text-slate-900 overflow-x-hidden">
+      {/* Persistent 3D Tooth Canvas Background */}
+      <ToothBackgroundCanvas />
+
       {/* Premium magnetic cursor — hidden on touch devices */}
       <MagneticCursor />
-
-      {/* Loading Screen */}
-      {loading && <LoadingScreen onLoadingComplete={() => setLoading(false)} />}
 
       {/* Global Navbar */}
       <Navbar onBookClick={handleBookClick} />

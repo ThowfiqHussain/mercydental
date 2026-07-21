@@ -21,7 +21,7 @@ export default function AboutSection() {
   ];
 
   return (
-    <section id="about" className="relative py-28 px-4 md:px-12 bg-white text-slate-900 overflow-hidden">
+    <section id="about" className="relative py-28 px-4 md:px-12 bg-white/85 backdrop-blur-md text-slate-900 overflow-hidden border-t border-slate-200/50">
       {/* Soft Pearl Glow */}
       <div className="absolute top-1/3 right-0 w-[600px] h-[600px] bg-pearl-200/60 rounded-full blur-[160px] pointer-events-none" />
 
@@ -57,7 +57,7 @@ export default function AboutSection() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: '-100px' }}
                 transition={{ duration: 0.8, delay: index * 0.15 }}
-                className="p-8 md:p-10 rounded-3xl bg-white border border-gold/30 shadow-lg relative group"
+                className="p-8 md:p-10 rounded-3xl bg-white/90 backdrop-blur-md border border-gold/30 shadow-xl relative group"
               >
                 <div className="flex items-center justify-between mb-4">
                   <span className="font-serif text-3xl font-bold text-gold-gradient">{point.number}</span>
