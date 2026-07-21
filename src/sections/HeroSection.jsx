@@ -114,11 +114,11 @@ export default function HeroSection({ onBookClick }) {
       <section
         id="hero"
         ref={stickyRef}
-        className="relative h-screen w-full flex flex-col justify-between pt-36 pb-16 px-6 md:px-16 overflow-hidden bg-slate-950/70"
+        className="relative h-screen w-full flex flex-col justify-between pt-36 pb-16 px-6 md:px-16 overflow-hidden bg-transparent"
       >
         {/* ── Multi-Layer Overlays ────────────────────────────── */}
-        <div className="absolute inset-0 bg-gradient-to-r from-slate-950/95 via-slate-950/60 to-transparent pointer-events-none z-0" />
-        <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent pointer-events-none z-0" />
+        <div className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/40 to-transparent pointer-events-none z-0" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent pointer-events-none z-0" />
         {/* Volumetric gold bloom on left */}
         <div className="absolute -left-32 top-1/3 w-[500px] h-[500px] bg-gold/10 rounded-full blur-[160px] pointer-events-none z-0" />
         {/* Highlight bloom behind tooth on right */}
@@ -145,7 +145,7 @@ export default function HeroSection({ onBookClick }) {
         {/* ── Integrated Cinematic Intro Screen (Stays static until user scrolls) ───── */}
         <div
           ref={introRef}
-          className="absolute inset-0 z-30 flex flex-col items-center justify-center bg-obsidian-pure/95 backdrop-blur-md text-white select-none transition-all duration-75"
+          className="absolute inset-0 z-30 flex flex-col items-center justify-center bg-black backdrop-blur-md text-white select-none transition-all duration-75"
         >
           {/* Molar Badge Icon */}
           <div className="relative w-20 h-20 mb-6 rounded-full border border-gold/50 flex items-center justify-center bg-obsidian-light shadow-[0_0_40px_rgba(212,175,55,0.3)]">
